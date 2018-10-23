@@ -8,7 +8,7 @@ namespace MultiQueueModels
 {
     public class TimeDistribution
     {
-        TimeDistribution()
+        public TimeDistribution()
         {
             IsCalculated = false;
         }
