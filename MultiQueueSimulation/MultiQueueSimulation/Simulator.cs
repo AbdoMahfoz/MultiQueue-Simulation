@@ -73,6 +73,7 @@ namespace MultiQueueSimulation
             Case.TimeInQueue = Case.StartTime - Case.ArrivalTime;
             Servers[serverNum].FinishTime = Case.StartTime + Case.ServiceTime;
             Servers[serverNum].TotalWorkingTime += Case.ServiceTime;
+            Servers[serverNum].AverageServiceTime += Case.ServiceTime;
         }
         /// <summary>
         /// Entry point of the simulator
