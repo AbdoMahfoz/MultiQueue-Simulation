@@ -18,7 +18,32 @@ namespace MultiQueueSimulation
         /// <returns>The requested random value</returns>
         static private int CalculateRandomValue(List<TimeDistribution> Distribution, int RandomVariable)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < Distribution.Count; i++)
+            {
+                if (!Distribution[i].IsCalculated)
+                {
+                    if(i == 0)
+                    {
+                       Distribution[i].CummProbability = Distribution[i].Probability;
+                       Distribution[i].MinRange = 1;
+                    }
+                    else
+                    {
+                        Distribution[i].CummProbability = Distribution[i].Probability + Distribution[i - 1].CummProbability;
+                        Distribution[i].MinRange = Distribution[i - 1].MaxRange + 1;
+                    }
+                    Distribution[i].MaxRange =(int)Distribution[i].CummProbability * 100;
+                    Distribution[i].IsCalculated = true;
+                }
+                if(RandomVariable<=Distribution[i].MaxRange && RandomVariable>=Distribution[i].MinRange)
+                {
+                    return Distribution[i].Time;
+                }
+            }
+            if (RandomVariable < 1 || RandomVariable > 100)
+                throw new ArgumentOutOfRangeException("RandomValue should be between 1 and 100");
+            else
+                throw new Exception("Debug meeeeeeeee");
         }
         /// <summary>
         /// Finds a server to sever the current simulation case
