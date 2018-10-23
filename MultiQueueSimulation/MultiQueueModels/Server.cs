@@ -14,7 +14,13 @@ namespace MultiQueueModels
         }
 
         public int ID { get; set; }
-        public decimal IdleProbability { get; set; }
+        public decimal IdleProbability
+        {
+            get
+            {
+                return 1 - Utilization;
+            }
+        }
         public decimal AverageServiceTime { get; set; } 
         public decimal Utilization { get; set; }
 
