@@ -16,7 +16,7 @@ namespace MultiQueueSimulation
         /// <param name="Distribution">Used to evaluate final random value</param>
         /// <param name="RandomVariable">The random number required by TimeDistribution parameter</param>
         /// <returns>The requested random value</returns>
-        static private int CalculateRandomValue(TimeDistribution Distribution, int RandomVariable)
+        static private int CalculateRandomValue(List<TimeDistribution> Distribution, int RandomVariable)
         {
             throw new NotImplementedException();
         }
@@ -26,7 +26,7 @@ namespace MultiQueueSimulation
         /// <param name="Case">The current simulation case that needs to be served</param>
         /// <param name="Servers">A list of all servers to search in</param>
         /// <returns>The server that will serve the given simulation case</returns>
-        static private Server GetAssignedServer(SimulationCase Case, List<Server> Servers)
+        static private void GetAssignedServer(SimulationCase Case, List<Server> Servers)
         {
             throw new NotImplementedException();
         }

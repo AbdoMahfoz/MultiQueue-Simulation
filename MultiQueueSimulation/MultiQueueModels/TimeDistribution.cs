@@ -8,6 +8,11 @@ namespace MultiQueueModels
 {
     public class TimeDistribution
     {
+        TimeDistribution()
+        {
+            IsCalculated = false;
+        }
+        public bool IsCalculated { get; set; }
         public int Time { get; set; }
         public decimal Probability { get; set; }
         public decimal CummProbability { get; set; }
