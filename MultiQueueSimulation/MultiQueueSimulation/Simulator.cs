@@ -10,6 +10,7 @@ namespace MultiQueueSimulation
     /// </summary>
     static class Simulator
     {
+        
         /// <summary>
         /// Extract the random value out of a TimeDistribution object using a given random variable
         /// </summary>
@@ -28,7 +29,25 @@ namespace MultiQueueSimulation
         /// <returns>The server that will serve the given simulation case</returns>
         static private void GetAssignedServer(SimulationCase Case, List<Server> Servers)
         {
-            throw new NotImplementedException();
+            int serverNum = 0;
+            int minServiceTime = Servers[0].FinishTime;
+            for (int i = 1; i < Servers.Count; i++)
+            {
+                if (Servers[i].FinishTime < minServiceTime)
+                {
+                    minServiceTime = Servers[i].FinishTime;
+                    serverNum = i;
+                }
+            }
+            Random rnd = new Random();
+            Case.AssignedServer = Servers[serverNum];
+            Case.RandomService = rnd.Next(1, 100);
+            Case.ServiceTime = CalculateRandomValue(Servers[serverNum].TimeDistribution, Case.RandomService);
+            Case.StartTime = Servers[serverNum].FinishTime;
+            Case.EndTime = Case.StartTime + Case.ServiceTime;
+            Case.TimeInQueue = Case.StartTime - Case.ArrivalTime;
+            Servers[serverNum].FinishTime = Case.StartTime + Case.ServiceTime;
+            Servers[serverNum].TotalWorkingTime += Case.ServiceTime;
         }
         /// <summary>
         /// Entry point of the simulator
