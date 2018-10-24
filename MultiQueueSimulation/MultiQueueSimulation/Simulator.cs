@@ -93,19 +93,38 @@ namespace MultiQueueSimulation
                 }
             }
             else if (SelectionMethod == Enums.SelectionMethod.LeastUtilization)
-            { 
-                /*
-                for (int i = 0; i < Servers.Count; i++)
+            {
+                int minValue = Servers[0].FinishTime;
+                for (int i = 1; i < Servers.Count; i++)
                 {
-                    if (Servers[i].Utilization < minUtilization)
+                    minValue = Math.Min(Servers[i].FinishTime, minValue);
+                }
+                bool flag = false;
+                if(minValue < Case.ArrivalTime)
+                {
+                    minValue = Case.ArrivalTime;
+                    flag = true;
+                }
+                decimal leastUtil = decimal.MaxValue;
+                for(int i = 0; i < Servers.Count; i++)
+                {
+                    if (flag)
                     {
-                        minUtilization = Servers[i].Utilization;
+                        if (Servers[i].FinishTime <= minValue && Servers[i].Utilization < leastUtil)
+                        {
+                            leastUtil = Servers[i].Utilization;
+                            serverNum= i;
+                        }
                     }
-                    if (Servers[i].FinishTime <= Case.ArrivalTime && Servers[i].Utilization == minUtilization)
+                    else
                     {
-                        serverNum = i;
+                        if (Servers[i].FinishTime == minValue && Servers[i].Utilization < leastUtil)
+                        {
+                            leastUtil = Servers[i].Utilization;
+                            serverNum = i;
+                        }
                     }
-                }*/
+                }
             }
             else
             {
@@ -121,7 +140,7 @@ namespace MultiQueueSimulation
             Case.AssignedServer = Servers[serverNum];
             Case.RandomService = rnd.Next(1, 100);
             Case.ServiceTime = CalculateRandomValue(Servers[serverNum].TimeDistribution, Case.RandomService);
-            Case.StartTime = Servers[serverNum].FinishTime;
+            Case.StartTime = Math.Max(Servers[serverNum].FinishTime, Case.ArrivalTime);
             Case.EndTime = Case.StartTime + Case.ServiceTime;
             Case.TimeInQueue = Case.StartTime - Case.ArrivalTime;
             Servers[serverNum].FinishTime = Case.StartTime + Case.ServiceTime;
