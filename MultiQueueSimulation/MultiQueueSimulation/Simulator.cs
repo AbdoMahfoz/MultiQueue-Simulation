@@ -154,6 +154,9 @@ namespace MultiQueueSimulation
         static private void SimulationMain(SimulationSystem System)
         {
             int ClockTime = 0;
+            int Total_TimeinQueue = 0;
+            int Number_Of_Customers_Who_Waited = 0;
+            int Max_QueueLength = 0;
             List<SimulationCase> Cases = new List<SimulationCase>();
             Cases[0].ArrivalTime = ClockTime;
             Cases[0].CustomerNumber = 1;
@@ -167,6 +170,15 @@ namespace MultiQueueSimulation
                     Cases[i].InterArrival=CalculateRandomValue(System.InterarrivalDistribution, Cases[i].RandomInterArrival);
                     Cases[i].ArrivalTime = Cases[i - 1].ArrivalTime + Cases[i].InterArrival;
                     GetAssignedServer(Cases[i], System.Servers, System.SelectionMethod);
+                    if (Cases[i].TimeInQueue > 0)
+                    {
+                        if (Max_QueueLength < Cases[i].TimeInQueue)
+                        {
+                            Max_QueueLength = Cases[i].TimeInQueue;
+                        }
+                        Total_TimeinQueue += Cases[i].TimeInQueue;
+                        Number_Of_Customers_Who_Waited++;
+                    }
                 }
                 ClockTime = Cases[System.StoppingNumber - 1].EndTime;
             }
@@ -180,10 +192,22 @@ namespace MultiQueueSimulation
                     Cases[Counter].InterArrival = CalculateRandomValue(System.InterarrivalDistribution, Cases[Counter].RandomInterArrival);
                     Cases[Counter].ArrivalTime = Cases[Counter - 1].ArrivalTime + Cases[Counter].InterArrival;
                     GetAssignedServer(Cases[Counter], System.Servers, System.SelectionMethod);
+                    if (Cases[Counter].TimeInQueue > 0)
+                    {
+                        if (Max_QueueLength < Cases[Counter].TimeInQueue)
+                        {
+                            Max_QueueLength = Cases[Counter].TimeInQueue;
+                        }
+                        Total_TimeinQueue += Cases[Counter].TimeInQueue;
+                        Number_Of_Customers_Who_Waited++;
+                    }
                     ClockTime = Cases[Counter].EndTime;
                     Counter++;
                 }
             }
+            System.PerformanceMeasures.AverageWaitingTime = (Total_TimeinQueue / Cases.Count);
+            System.PerformanceMeasures.WaitingProbability = (Number_Of_Customers_Who_Waited / Cases.Count);
+            System.PerformanceMeasures.MaxQueueLength = Max_QueueLength;
         }
         /// <summary>
         /// Runs the Simulation and fills the required outputs
