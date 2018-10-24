@@ -155,10 +155,11 @@ namespace MultiQueueSimulation
         {
             int ClockTime = 0;
             List<SimulationCase> Cases = new List<SimulationCase>();
+            Cases[0].ArrivalTime = ClockTime;
+            Cases[0].CustomerNumber = 1;
+            GetAssignedServer(Cases[0], System.Servers, System.SelectionMethod);
             if (System.StoppingCriteria == Enums.StoppingCriteria.NumberOfCustomers)
             {
-                Cases[0].ArrivalTime = ClockTime;
-                GetAssignedServer(Cases[0], System.Servers, System.SelectionMethod);
                 for(int i = 1; i < System.StoppingNumber; i++)
                 {
                     Cases[i].CustomerNumber = i + 1;
@@ -166,6 +167,21 @@ namespace MultiQueueSimulation
                     Cases[i].InterArrival=CalculateRandomValue(System.InterarrivalDistribution, Cases[i].RandomInterArrival);
                     Cases[i].ArrivalTime = Cases[i - 1].ArrivalTime + Cases[i].InterArrival;
                     GetAssignedServer(Cases[i], System.Servers, System.SelectionMethod);
+                }
+                ClockTime = Cases[System.StoppingNumber - 1].EndTime;
+            }
+            else
+            {
+                int Counter = 1;
+                while (System.StoppingNumber < ClockTime)
+                {
+                    Cases[Counter].CustomerNumber = Counter + 1;
+                    Cases[Counter].RandomInterArrival = rnd.Next(1, 100);
+                    Cases[Counter].InterArrival = CalculateRandomValue(System.InterarrivalDistribution, Cases[Counter].RandomInterArrival);
+                    Cases[Counter].ArrivalTime = Cases[Counter - 1].ArrivalTime + Cases[Counter].InterArrival;
+                    GetAssignedServer(Cases[Counter], System.Servers, System.SelectionMethod);
+                    ClockTime = Cases[Counter].EndTime;
+                    Counter++;
                 }
             }
         }
