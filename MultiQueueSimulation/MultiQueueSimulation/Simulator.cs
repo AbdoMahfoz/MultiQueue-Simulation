@@ -158,12 +158,14 @@ namespace MultiQueueSimulation
             if (System.StoppingCriteria == Enums.StoppingCriteria.NumberOfCustomers)
             {
                 Cases[0].ArrivalTime = ClockTime;
+                GetAssignedServer(Cases[0], System.Servers, System.SelectionMethod);
                 for(int i = 1; i < System.StoppingNumber; i++)
                 {
                     Cases[i].CustomerNumber = i + 1;
                     Cases[i].RandomInterArrival = rnd.Next(1, 100);
                     Cases[i].InterArrival=CalculateRandomValue(System.InterarrivalDistribution, Cases[i].RandomInterArrival);
                     Cases[i].ArrivalTime = Cases[i - 1].ArrivalTime + Cases[i].InterArrival;
+                    GetAssignedServer(Cases[i], System.Servers, System.SelectionMethod);
                 }
             }
         }
