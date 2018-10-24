@@ -153,7 +153,19 @@ namespace MultiQueueSimulation
         /// <param name="System">The system to be simulated</param>
         static private void SimulationMain(SimulationSystem System)
         {
-            throw new NotImplementedException();
+            int ClockTime = 0;
+            List<SimulationCase> Cases = new List<SimulationCase>();
+            if (System.StoppingCriteria == Enums.StoppingCriteria.NumberOfCustomers)
+            {
+                Cases[0].ArrivalTime = ClockTime;
+                for(int i = 1; i < System.StoppingNumber; i++)
+                {
+                    Cases[i].CustomerNumber = i + 1;
+                    Cases[i].RandomInterArrival = rnd.Next(1, 100);
+                    Cases[i].InterArrival=CalculateRandomValue(System.InterarrivalDistribution, Cases[i].RandomInterArrival);
+                    Cases[i].ArrivalTime = Cases[i - 1].ArrivalTime + Cases[i].InterArrival;
+                }
+            }
         }
         /// <summary>
         /// Runs the Simulation and fills the required outputs
