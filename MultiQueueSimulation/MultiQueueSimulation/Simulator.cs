@@ -10,7 +10,7 @@ namespace MultiQueueSimulation
     /// </summary>
     static class Simulator
     {
-        
+        static Random rnd = new Random();
         /// <summary>
         /// Extract the random value out of a TimeDistribution object using a given random variable
         /// </summary>
@@ -52,19 +52,72 @@ namespace MultiQueueSimulation
         /// <param name="Case">The current simulation case that needs to be served</param>
         /// <param name="Servers">A list of all servers to search in</param>
         /// <returns>The server that will serve the given simulation case</returns>
-        static private void GetAssignedServer(SimulationCase Case, List<Server> Servers)
+        static private void GetAssignedServer(SimulationCase Case, List<Server> Servers,Enums.SelectionMethod SelectionMethod)
         {
             int serverNum = 0;
             int minServiceTime = Servers[0].FinishTime;
-            for (int i = 1; i < Servers.Count; i++)
+            int minBigger = Servers[0].FinishTime;
+            bool bigger = true;
+            decimal minUtilization = Servers[0].Utilization;
+            if (SelectionMethod == Enums.SelectionMethod.HighestPriority)
             {
-                if (Servers[i].FinishTime < minServiceTime)
+                for (int i = 0; i < Servers.Count; i++)
                 {
-                    minServiceTime = Servers[i].FinishTime;
-                    serverNum = i;
+                    if (Servers[i].FinishTime <= Case.ArrivalTime)
+                    {
+                        bigger = false;
+
+                    }
+                    if (Servers[i].FinishTime < minBigger)
+                        minBigger = i;
+
+                    //law bigger fdlt  b true yb2a mafish 7aga asghr wla ysawii
+                    //gbt asghr w7d shelo fl minBigger
+                }
+                if (bigger == true)
+                {
+                    minServiceTime = Servers[minBigger].FinishTime;
+                    serverNum = minBigger;
+                }
+                else
+                {
+                    for (int i = 0; i < Servers.Count; i++)
+                    {
+                        if (Servers[i].FinishTime <= Case.ArrivalTime)
+                        {
+                            minServiceTime = Servers[i].FinishTime;
+                            serverNum = i;
+                            break;
+                        }
+                    }
                 }
             }
-            Random rnd = new Random();
+            else if (SelectionMethod == Enums.SelectionMethod.LeastUtilization)
+            { 
+                /*
+                for (int i = 0; i < Servers.Count; i++)
+                {
+                    if (Servers[i].Utilization < minUtilization)
+                    {
+                        minUtilization = Servers[i].Utilization;
+                    }
+                    if (Servers[i].FinishTime <= Case.ArrivalTime && Servers[i].Utilization == minUtilization)
+                    {
+                        serverNum = i;
+                    }
+                }*/
+            }
+            else
+            {
+                for (int i = 1; i < Servers.Count; i++)
+                {
+                    if (Servers[i].FinishTime < minServiceTime)
+                    {
+                        minServiceTime = Servers[i].FinishTime;
+                        serverNum = i;
+                    }
+                }
+            }
             Case.AssignedServer = Servers[serverNum];
             Case.RandomService = rnd.Next(1, 100);
             Case.ServiceTime = CalculateRandomValue(Servers[serverNum].TimeDistribution, Case.RandomService);
