@@ -208,6 +208,7 @@ namespace MultiQueueSimulation
             System.PerformanceMeasures.AverageWaitingTime = (Total_TimeinQueue / Cases.Count);
             System.PerformanceMeasures.WaitingProbability = (Number_Of_Customers_Who_Waited / Cases.Count);
             System.PerformanceMeasures.MaxQueueLength = Max_QueueLength;
+            System.SimulationTable = Cases;
         }
         /// <summary>
         /// Runs the Simulation and fills the required outputs
