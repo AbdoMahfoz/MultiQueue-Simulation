@@ -153,56 +153,87 @@ namespace MultiQueueSimulation
         /// <param name="System">The system to be simulated</param>
         static private void SimulationMain(SimulationSystem System)
         {
-            int ClockTime = 0;
+            Queue<SimulationCase> Queue = new Queue<SimulationCase>();
+            int SimulationTime = 0;
             int Total_TimeinQueue = 0;
             int Number_Of_Customers_Who_Waited = 0;
             int Max_QueueLength = 0;
             List<SimulationCase> Cases = new List<SimulationCase>();
-            Cases[0].ArrivalTime = ClockTime;
+            Cases[0].ArrivalTime = SimulationTime;
             Cases[0].CustomerNumber = 1;
             GetAssignedServer(Cases[0], System.Servers, System.SelectionMethod);
             if (System.StoppingCriteria == Enums.StoppingCriteria.NumberOfCustomers)
             {
                 for(int i = 1; i < System.StoppingNumber; i++)
                 {
-                    Cases[i].CustomerNumber = i + 1;
-                    Cases[i].RandomInterArrival = rnd.Next(1, 100);
-                    Cases[i].InterArrival=CalculateRandomValue(System.InterarrivalDistribution, Cases[i].RandomInterArrival);
-                    Cases[i].ArrivalTime = Cases[i - 1].ArrivalTime + Cases[i].InterArrival;
-                    GetAssignedServer(Cases[i], System.Servers, System.SelectionMethod);
-                    if (Cases[i].TimeInQueue > 0)
+                    SimulationCase c = new SimulationCase
                     {
-                        if (Max_QueueLength < Cases[i].TimeInQueue)
+                        CustomerNumber = i + 1,
+                        RandomInterArrival = rnd.Next(1, 100)
+                    };
+                    c.InterArrival = CalculateRandomValue(System.InterarrivalDistribution, c.RandomInterArrival);
+                    c.ArrivalTime = Cases[i - 1].ArrivalTime + c.InterArrival;
+                    GetAssignedServer(c, System.Servers, System.SelectionMethod);
+                    SimulationTime = Math.Max(SimulationTime, c.EndTime);
+                    while(Queue.Count > 0)
+                    {
+                        if(Queue.Peek().StartTime <= c.ArrivalTime)
                         {
-                            Max_QueueLength = Cases[i].TimeInQueue;
+                            Queue.Dequeue();
                         }
-                        Total_TimeinQueue += Cases[i].TimeInQueue;
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    if (c.TimeInQueue > 0)
+                    {
+                        Queue.Enqueue(c);
+                        Total_TimeinQueue += c.TimeInQueue;
                         Number_Of_Customers_Who_Waited++;
                     }
+                    Max_QueueLength = Math.Max(Max_QueueLength, Queue.Count);
+                    Cases.Add(c);
                 }
-                ClockTime = Cases[System.StoppingNumber - 1].EndTime;
             }
             else
             {
                 int Counter = 1;
-                while (System.StoppingNumber < ClockTime)
+                while (true)
                 {
-                    Cases[Counter].CustomerNumber = Counter + 1;
-                    Cases[Counter].RandomInterArrival = rnd.Next(1, 100);
-                    Cases[Counter].InterArrival = CalculateRandomValue(System.InterarrivalDistribution, Cases[Counter].RandomInterArrival);
-                    Cases[Counter].ArrivalTime = Cases[Counter - 1].ArrivalTime + Cases[Counter].InterArrival;
-                    GetAssignedServer(Cases[Counter], System.Servers, System.SelectionMethod);
-                    if (Cases[Counter].TimeInQueue > 0)
+                    SimulationCase c = new SimulationCase
                     {
-                        if (Max_QueueLength < Cases[Counter].TimeInQueue)
+                        CustomerNumber = Counter + 1,
+                        RandomInterArrival = rnd.Next(1, 100)
+                    };
+                    c.InterArrival = CalculateRandomValue(System.InterarrivalDistribution, c.RandomInterArrival);
+                    c.ArrivalTime = Cases[Cases.Count - 1].ArrivalTime + c.InterArrival;
+                    if(c.ArrivalTime > System.StoppingNumber)
+                    {
+                        Cases.RemoveAt(Cases.Count - 1);
+                        break;
+                    }
+                    GetAssignedServer(c, System.Servers, System.SelectionMethod);
+                    while (Queue.Count > 0)
+                    {
+                        if (Queue.Peek().StartTime <= c.ArrivalTime)
                         {
-                            Max_QueueLength = Cases[Counter].TimeInQueue;
+                            Queue.Dequeue();
                         }
-                        Total_TimeinQueue += Cases[Counter].TimeInQueue;
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    if (c.TimeInQueue > 0)
+                    {
+                        Queue.Enqueue(c);
+                        Total_TimeinQueue += c.TimeInQueue;
                         Number_Of_Customers_Who_Waited++;
                     }
-                    ClockTime = Cases[Counter].EndTime;
+                    SimulationTime = Math.Max(c.EndTime, SimulationTime);
                     Counter++;
+                    Cases.Add(c);
                 }
             }
             System.PerformanceMeasures.AverageWaitingTime = (Total_TimeinQueue / Cases.Count);
