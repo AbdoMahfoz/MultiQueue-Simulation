@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MultiQueueModels;
@@ -223,7 +225,6 @@ namespace MultiQueueSimulation
                     }
                     if(c.ArrivalTime > System.StoppingNumber)
                     {
-                        Cases.RemoveAt(Cases.Count - 1);
                         break;
                     }
                     GetAssignedServer(c, System.Servers, System.SelectionMethod);
@@ -244,7 +245,8 @@ namespace MultiQueueSimulation
                         Total_TimeinQueue += c.TimeInQueue;
                         Number_Of_Customers_Who_Waited++;
                     }
-                    SimulationTime = Math.Max(c.EndTime, SimulationTime);
+                    SimulationTime = Math.Max(SimulationTime, c.EndTime);
+                    Max_QueueLength = Math.Max(Max_QueueLength, Queue.Count);
                     Counter++;
                     Cases.Add(c);
                 }
@@ -261,13 +263,28 @@ namespace MultiQueueSimulation
             }
         }
         /// <summary>
-        /// Tests the program using the provided testing dll
+        /// Tests the simulator using the provided testing dll and test cases
         /// </summary>
-        static public void Test(string TestCase)
+        static public async Task Test()
         {
-            SimulationSystem s = MultiQueueTesting.TestCase.GetSystem(TestCase);
-            SimulationMain(s);
-            MessageBox.Show(MultiQueueTesting.TestingManager.Test(s, TestCase));
+            List<string> Results = new List<string>();
+            foreach (string s in Directory.EnumerateFiles(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory().ToString()).ToString()) + "\\TestCases\\"))
+            {
+                string fileName = s.Substring(s.LastIndexOf("\\") + 1);
+                if (fileName.Contains("TestCase"))
+                {
+                    SimulationSystem system = MultiQueueTesting.TestCase.GetSystem(fileName);
+                    await StartSimulation(system);
+                    Results.Add(MultiQueueTesting.TestingManager.Test(system, fileName));
+                }
+            }
+            StringBuilder builder = new StringBuilder();
+            builder.Append("Number of test cases : " + Results.Count);
+            for (int i = 1; i <= Results.Count; i++)
+            {
+                builder.Append("\nTest #" + i + ":\n" + Results[i - 1]);
+            }
+            MessageBox.Show(builder.ToString());
         }
         /// <summary>
         /// Runs the Simulation and fills the required outputs

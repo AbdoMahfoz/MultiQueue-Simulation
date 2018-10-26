@@ -104,5 +104,13 @@ namespace MultiQueueSimulation
                 ServiceDistribution.Text = "Service Distribution : Server [ " + i + " ] ";
             }
         }
+        private async void TestButton_Click(object sender, EventArgs e)
+        {
+            TestButton.Text = "Testing...";
+            TestButton.Enabled = false;
+            await Simulator.Test();
+            TestButton.Text = "Automatic Testing";
+            TestButton.Enabled = true;
+        }
     }
 }

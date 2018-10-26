@@ -47,6 +47,7 @@
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Submit = new System.Windows.Forms.Button();
             this.NextServer = new System.Windows.Forms.Button();
+            this.TestButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.NumOfS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.StoppingNum)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.InterAT)).BeginInit();
@@ -253,6 +254,17 @@
             this.NextServer.UseVisualStyleBackColor = true;
             this.NextServer.Click += new System.EventHandler(this.NextServer_Click);
             // 
+            // TestButton
+            // 
+            this.TestButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TestButton.Location = new System.Drawing.Point(611, 478);
+            this.TestButton.Name = "TestButton";
+            this.TestButton.Size = new System.Drawing.Size(184, 32);
+            this.TestButton.TabIndex = 16;
+            this.TestButton.Text = "Automatic testing";
+            this.TestButton.UseVisualStyleBackColor = true;
+            this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -260,6 +272,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(807, 533);
+            this.Controls.Add(this.TestButton);
             this.Controls.Add(this.NextServer);
             this.Controls.Add(this.Submit);
             this.Controls.Add(this.dataGridView1);
@@ -310,6 +323,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.Button Submit;
         private System.Windows.Forms.Button NextServer;
+        private System.Windows.Forms.Button TestButton;
     }
 }
 
