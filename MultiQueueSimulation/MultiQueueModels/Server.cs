@@ -20,6 +20,10 @@ namespace MultiQueueModels
             {
                 return 1 - Utilization;
             }
+            set
+            {
+                Utilization = 1 - value;
+            }
         }
         public decimal AverageServiceTime { get; set; } 
         public decimal Utilization { get; set; }

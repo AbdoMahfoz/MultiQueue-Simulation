@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using MultiQueueModels;
 
 namespace MultiQueueSimulation
@@ -33,7 +34,7 @@ namespace MultiQueueSimulation
                         Distribution[i].CummProbability = Distribution[i].Probability + Distribution[i - 1].CummProbability;
                         Distribution[i].MinRange = Distribution[i - 1].MaxRange + 1;
                     }
-                    Distribution[i].MaxRange =(int)Distribution[i].CummProbability * 100;
+                    Distribution[i].MaxRange =(int)(Distribution[i].CummProbability * 100);
                     Distribution[i].IsCalculated = true;
                 }
                 if(RandomVariable<=Distribution[i].MaxRange && RandomVariable>=Distribution[i].MinRange)
@@ -56,7 +57,7 @@ namespace MultiQueueSimulation
         {
             int serverNum = 0;
             int minServiceTime = Servers[0].FinishTime;
-            int minBigger = Servers[0].FinishTime;
+            int minBigger = 0;
             bool bigger = true;
             decimal minUtilization = Servers[0].Utilization;
             if (SelectionMethod == Enums.SelectionMethod.HighestPriority)
@@ -66,17 +67,15 @@ namespace MultiQueueSimulation
                     if (Servers[i].FinishTime <= Case.ArrivalTime)
                     {
                         bigger = false;
-
                     }
-                    if (Servers[i].FinishTime < minBigger)
+                    if (Servers[i].FinishTime < minServiceTime)
+                    {
                         minBigger = i;
-
-                    //law bigger fdlt  b true yb2a mafish 7aga asghr wla ysawii
-                    //gbt asghr w7d shelo fl minBigger
+                        minServiceTime = Servers[i].FinishTime;
+                    }
                 }
                 if (bigger == true)
                 {
-                    minServiceTime = Servers[minBigger].FinishTime;
                     serverNum = minBigger;
                 }
                 else
@@ -159,20 +158,25 @@ namespace MultiQueueSimulation
             int Number_Of_Customers_Who_Waited = 0;
             int Max_QueueLength = 0;
             List<SimulationCase> Cases = new List<SimulationCase>();
-            Cases[0].ArrivalTime = SimulationTime;
-            Cases[0].CustomerNumber = 1;
-            GetAssignedServer(Cases[0], System.Servers, System.SelectionMethod);
             if (System.StoppingCriteria == Enums.StoppingCriteria.NumberOfCustomers)
             {
-                for(int i = 1; i < System.StoppingNumber; i++)
+                for(int i = 0; i < System.StoppingNumber; i++)
                 {
                     SimulationCase c = new SimulationCase
                     {
-                        CustomerNumber = i + 1,
+                        CustomerNumber = i,
                         RandomInterArrival = rnd.Next(1, 100)
                     };
-                    c.InterArrival = CalculateRandomValue(System.InterarrivalDistribution, c.RandomInterArrival);
-                    c.ArrivalTime = Cases[i - 1].ArrivalTime + c.InterArrival;
+                    if (i == 0)
+                    {
+                        c.InterArrival = 0;
+                        c.ArrivalTime = 0;
+                    }
+                    else
+                    {
+                        c.InterArrival = CalculateRandomValue(System.InterarrivalDistribution, c.RandomInterArrival);
+                        c.ArrivalTime = Cases[i - 1].ArrivalTime + c.InterArrival;
+                    }
                     GetAssignedServer(c, System.Servers, System.SelectionMethod);
                     SimulationTime = Math.Max(SimulationTime, c.EndTime);
                     while(Queue.Count > 0)
@@ -198,16 +202,24 @@ namespace MultiQueueSimulation
             }
             else
             {
-                int Counter = 1;
+                int Counter = 0;
                 while (true)
                 {
                     SimulationCase c = new SimulationCase
                     {
-                        CustomerNumber = Counter + 1,
+                        CustomerNumber = Counter,
                         RandomInterArrival = rnd.Next(1, 100)
                     };
-                    c.InterArrival = CalculateRandomValue(System.InterarrivalDistribution, c.RandomInterArrival);
-                    c.ArrivalTime = Cases[Cases.Count - 1].ArrivalTime + c.InterArrival;
+                    if (Cases.Count == 0)
+                    {
+                        c.InterArrival = 0;
+                        c.ArrivalTime = 0;
+                    }
+                    else
+                    {
+                        c.InterArrival = CalculateRandomValue(System.InterarrivalDistribution, c.RandomInterArrival);
+                        c.ArrivalTime = Cases[Cases.Count - 1].ArrivalTime + c.InterArrival;
+                    }
                     if(c.ArrivalTime > System.StoppingNumber)
                     {
                         Cases.RemoveAt(Cases.Count - 1);
@@ -236,21 +248,30 @@ namespace MultiQueueSimulation
                     Cases.Add(c);
                 }
             }
-            System.PerformanceMeasures.AverageWaitingTime = (Total_TimeinQueue / Cases.Count);
-            System.PerformanceMeasures.WaitingProbability = (Number_Of_Customers_Who_Waited / Cases.Count);
+            System.PerformanceMeasures.AverageWaitingTime = ((decimal)Total_TimeinQueue / Cases.Count);
+            System.PerformanceMeasures.WaitingProbability = ((decimal)Number_Of_Customers_Who_Waited / Cases.Count);
             System.PerformanceMeasures.MaxQueueLength = Max_QueueLength;
             System.SimulationTable = Cases;
             for(int i = 0; i < System.Servers.Count; i++)
             {
-                System.Servers[i].AverageServiceTime /= SimulationTime;
+                System.Servers[i].AverageServiceTime /= System.Servers.Count;
                 System.Servers[i].Utilization = System.Servers[i].TotalWorkingTime / SimulationTime;
             }
+        }
+        /// <summary>
+        /// Tests the program using the provided testing dll
+        /// </summary>
+        static public void Test(string TestCase)
+        {
+            SimulationSystem s = MultiQueueTesting.TestCase.GetSystem(TestCase);
+            SimulationMain(s);
+            MessageBox.Show(MultiQueueTesting.TestingManager.Test(s, TestCase));
         }
         /// <summary>
         /// Runs the Simulation and fills the required outputs
         /// </summary>
         /// <param name="System">The system to be simulated</param>
-        static public async void StartSimulation(SimulationSystem System)
+        static public async Task StartSimulation(SimulationSystem System)
         {
             await Task.Run(() =>
             {

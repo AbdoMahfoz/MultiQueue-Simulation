@@ -16,6 +16,7 @@ namespace MultiQueueSimulation
         [STAThread]
         static void Main()
         {
+            Simulator.Test("TestCase1.txt");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

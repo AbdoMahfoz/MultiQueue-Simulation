@@ -59,7 +59,7 @@ namespace MultiQueueSimulation
         {
            
         }
-        private void Submit_Click(object sender, EventArgs e)
+        private async void Submit_Click(object sender, EventArgs e)
         {
             for (int rows = 0; rows < InterAT.Rows.Count -1; rows++)
             {
@@ -68,8 +68,11 @@ namespace MultiQueueSimulation
                     Time = int.Parse((string)InterAT.Rows[rows].Cells[0].Value) ,
                     Probability = decimal.Parse((string)InterAT.Rows[rows].Cells[1].Value)});
             }
-
-            Simulator.StartSimulation(SS);
+            Submit.Text = "Running...";
+            Submit.Enabled = false;
+            await Simulator.StartSimulation(SS);
+            Submit.Text = "Submit";
+            Submit.Enabled = true;
         }
         int i = 1;
         private void NextServer_Click(object sender, EventArgs e)
