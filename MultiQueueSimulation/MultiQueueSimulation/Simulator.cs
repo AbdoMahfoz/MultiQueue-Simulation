@@ -145,6 +145,7 @@ namespace MultiQueueSimulation
             Servers[serverNum].FinishTime = Case.StartTime + Case.ServiceTime;
             Servers[serverNum].TotalWorkingTime += Case.ServiceTime;
             Servers[serverNum].AverageServiceTime += Case.ServiceTime;
+            Servers[serverNum].ServedCount++;
         }
         /// <summary>
         /// Entry point of the simulator
@@ -254,8 +255,9 @@ namespace MultiQueueSimulation
             System.SimulationTable = Cases;
             for(int i = 0; i < System.Servers.Count; i++)
             {
-                System.Servers[i].AverageServiceTime /= System.Servers.Count;
-                System.Servers[i].Utilization = System.Servers[i].TotalWorkingTime / SimulationTime;
+                if(System.Servers[i].ServedCount != 0)
+                    System.Servers[i].AverageServiceTime /= System.Servers[i].ServedCount;
+                System.Servers[i].Utilization = (decimal)System.Servers[i].TotalWorkingTime / SimulationTime;
             }
         }
         /// <summary>

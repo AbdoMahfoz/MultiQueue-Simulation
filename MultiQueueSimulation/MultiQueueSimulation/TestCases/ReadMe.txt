@@ -8,8 +8,7 @@ StoppingCriteria
 // the criteria on which the simulation will end => Enums.StoppingCriteria.NumberOfCustomers or Enums.StoppingCriteria.SimulationEndTime
 
 SelectionMethod
-// the method by which the servers will be selected => Enums.SelectionMethod.HighestPriority or Enums.SelectionMethod.Random or 
-//Enums.SelectionMethod.LeastUtilization
+// the method by which the servers will be selected => Enums.SelectionMethod.HighestPriority or Enums.SelectionMethod.Random or Enums.SelectionMethod.LeastUtilization
 
 InterarrivalDistribution
 // The interarrival distribution by which arrival between customers are simulated
