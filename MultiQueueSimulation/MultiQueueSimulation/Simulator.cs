@@ -13,6 +13,9 @@ namespace MultiQueueSimulation
     /// </summary>
     static class Simulator
     {
+        /// <summary>
+        /// Random number generator
+        /// </summary>
         static Random rnd = new Random();
         /// <summary>
         /// Extract the random value out of a TimeDistribution object using a given random variable
@@ -54,8 +57,8 @@ namespace MultiQueueSimulation
         /// </summary>
         /// <param name="Case">The current simulation case that needs to be served</param>
         /// <param name="Servers">A list of all servers to search in</param>
-        /// <returns>The server that will serve the given simulation case</returns>
-        static private void GetAssignedServer(SimulationCase Case, List<Server> Servers,Enums.SelectionMethod SelectionMethod)
+        /// <param name="SelectionMethod">The server selection method when multiple free servers are available</param>
+        static private void GetAssignedServer(SimulationCase Case, List<Server> Servers, Enums.SelectionMethod SelectionMethod)
         {
             int serverNum = 0;
             int minServiceTime = Servers[0].FinishTime;

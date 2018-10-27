@@ -114,7 +114,6 @@
             this.SelectionMethod.TabIndex = 4;
             this.SelectionMethod.Tag = "";
             this.SelectionMethod.Text = "Selection Method  : ";
-            this.SelectionMethod.Click += new System.EventHandler(this.SelectionMethod_Click);
             // 
             // NumOfS
             // 
@@ -184,7 +183,6 @@
             this.InterAT.Name = "InterAT";
             this.InterAT.Size = new System.Drawing.Size(241, 190);
             this.InterAT.TabIndex = 11;
-            this.InterAT.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.InterAT_CellContentClick);
             // 
             // TimeC
             // 
@@ -293,7 +291,6 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "Multi Queue Simulation";
-            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.NumOfS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.StoppingNum)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.InterAT)).EndInit();
