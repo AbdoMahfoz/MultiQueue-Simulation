@@ -41,6 +41,8 @@ namespace MultiQueueSimulation
             Submit.Text = "Running...";
             Submit.Enabled = false;
             await Simulator.StartSimulation(SS);
+            Visualizer.PlotUtilizationGraph(SS);
+            Application.Exit();
             Submit.Text = "Submit";
             Submit.Enabled = true;
         }

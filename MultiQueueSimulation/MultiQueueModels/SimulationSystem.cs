@@ -25,6 +25,7 @@ namespace MultiQueueModels
         public Enums.SelectionMethod SelectionMethod { get; set; }
 
         ///////////// OUTPUTS /////////////
+        public int TotalSimulationTime { get; set; }
         public List<SimulationCase> SimulationTable { get; set; }
         public PerformanceMeasures PerformanceMeasures { get; set; }
     }

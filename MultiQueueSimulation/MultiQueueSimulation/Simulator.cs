@@ -147,6 +147,7 @@ namespace MultiQueueSimulation
             Case.StartTime = Math.Max(Servers[serverNum].FinishTime, Case.ArrivalTime);
             Case.EndTime = Case.StartTime + Case.ServiceTime;
             Case.TimeInQueue = Case.StartTime - Case.ArrivalTime;
+            Servers[serverNum].UtilizationTimes.Add(new KeyValuePair<int, int>(Case.StartTime, Case.EndTime));
             Servers[serverNum].FinishTime = Case.StartTime + Case.ServiceTime;
             Servers[serverNum].TotalWorkingTime += Case.ServiceTime;
             Servers[serverNum].AverageServiceTime += Case.ServiceTime;
@@ -258,6 +259,7 @@ namespace MultiQueueSimulation
             System.PerformanceMeasures.WaitingProbability = ((decimal)Number_Of_Customers_Who_Waited / Cases.Count);
             System.PerformanceMeasures.MaxQueueLength = Max_QueueLength;
             System.SimulationTable = Cases;
+            System.TotalSimulationTime = SimulationTime;
             for(int i = 0; i < System.Servers.Count; i++)
             {
                 if(System.Servers[i].ServedCount != 0)

@@ -11,6 +11,7 @@ namespace MultiQueueModels
         public Server()
         {
             this.TimeDistribution = new List<TimeDistribution>();
+            this.UtilizationTimes = new List<KeyValuePair<int, int>>();
         }
 
         public int ID { get; set; }
@@ -28,6 +29,8 @@ namespace MultiQueueModels
         public decimal AverageServiceTime { get; set; } 
         public decimal Utilization { get; set; }
         public List<TimeDistribution> TimeDistribution;
+        //public SegmentTree UtilizationTimes;
+        public List<KeyValuePair<int, int>> UtilizationTimes;
 
         //optional if needed use them
         public int FinishTime { get; set; }
