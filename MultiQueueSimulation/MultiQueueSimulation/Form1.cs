@@ -42,15 +42,22 @@ namespace MultiQueueSimulation
             Submit.Enabled = false;
             await Simulator.StartSimulation(SS);
             Visualizer.PlotUtilizationGraph(SS);
+            TableForm form = new TableForm(SS);
+            form.ShowDialog();
             Application.Exit();
+            /*
             Submit.Text = "Submit";
             Submit.Enabled = true;
+            */
         }
         int i = 1;
         private void NextServer_Click(object sender, EventArgs e)
         {
             NumOfS.Enabled = false;
-            Server s = new Server();
+            Server s = new Server()
+            {
+                ID = i - 1
+            };
             for (int rows = 0; rows < dataGridView1.Rows.Count - 1; rows++)
             {
                 s.TimeDistribution.Add(new TimeDistribution()

@@ -4,8 +4,15 @@ using MultiQueueModels;
 
 namespace MultiQueueSimulation
 {
+    /// <summary>
+    /// A static class for graph visualization
+    /// </summary>
     static class Visualizer
     {
+        /// <summary>
+        /// Plots utilizaition graph of the system's servers using an external python script
+        /// </summary>
+        /// <param name="System">The simulation system to be plotted</param>
         static public void PlotUtilizationGraph(SimulationSystem System)
         {
             Process p = new Process();
@@ -50,6 +57,7 @@ namespace MultiQueueSimulation
                 }
                 p.StandardInput.Write('\n');
                 p.StandardInput.WriteLine(ServerNum++);
+                p.StandardInput.Flush();
                 p.WaitForExit();
             }
         }
